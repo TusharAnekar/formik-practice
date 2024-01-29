@@ -24,7 +24,3 @@ A formik react form which showcases the power of formik.
 - React JS
 - Formik
 - TailwindCSS
-
-### BACKEND
-
-1. mockBee - https://mockbee.netlify.app/

@@ -1,14 +1,23 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import "./App.css";
+import { MyTextInput } from "./components/MyTextInput";
+import { MySelect } from "./components/MySelect";
+import { MyCheckbox } from "./components/MyCheckbox";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <h1 className="text-xl text-red-500">Formik Practice</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h1 className="text-2xl text-red-500">Formik Form</h1>
 
       <Formik
-        initialValues={{ firstName: "", lastName: "", email: "" }}
+        initialValues={{
+          firstName: "",
+          lastName: "",
+          email: "",
+          acceptedTerms: false,
+          jobType: "",
+        }}
         validationSchema={Yup.object({
           firstName: Yup.string()
             .max(15, "Must be 15 characters or less")
@@ -19,68 +28,67 @@ function App() {
           email: Yup.string()
             .email("Invalid email address")
             .required("Required"),
-          colors: Yup.string().required("Required"),
+          jobType: Yup.string()
+            .oneOf(
+              ["designer", "development", "product", "other"],
+              "Invalid Job Type",
+            )
+            .required("Required"),
+          acceptedTerms: Yup.boolean()
+            .required("Required")
+            .oneOf([true], "You must accept the terms and conditions."),
         })}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
+            window.location.reload();
           }, 400);
         }}
       >
-        <Form>
-          <label htmlFor="firstName" className="block">
-            First Name
-          </label>
-          <Field
-            name="firstName"
-            type="text"
-            className="block rounded-lg border border-black p-1"
-          />
-          <p className="mb-2 text-red-600">
-            <ErrorMessage name="firstName" />
-          </p>
+        <div className="w-1/2 rounded-lg border border-black drop-shadow-2xl">
+          <Form className="p-4">
+            <MyTextInput
+              label="First Name"
+              name="firstName"
+              type="text"
+              placeholder="Tushar"
+            />
 
-          <label htmlFor="lastName" className="block">
-            Last Name
-          </label>
-          <Field
-            name="lastName"
-            type="text"
-            className="block rounded-lg border border-black p-1 "
-          />
-          <p className="mb-2 text-red-600">
-            <ErrorMessage name="lastName" />
-          </p>
+            <MyTextInput
+              label="Last Name"
+              name="lastName"
+              type="text"
+              placeholder="Anekar"
+            />
 
-          <label htmlFor="email" className="block">
-            Email Address
-          </label>
-          <Field
-            name="email"
-            type="email"
-            className="block rounded-lg border border-black p-1 "
-          />
-          <p className="mb-2 text-red-600">
-            <ErrorMessage name="email" />
-          </p>
+            <MyTextInput
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="tushar@formik.com"
+            />
 
-          <label htmlFor="colors">Color</label>
-          <Field name="colors" as="select" className="my-select">
-            <option value="">select</option>
-            <option value="red">Red</option>
-            <option value="green">Green</option>
-            <option value="blue">Blue</option>
-          </Field>
-          <ErrorMessage name="colors" component={"p"} />
+            <MySelect label="Job Type" name="jobType">
+              <option value="">Select a job type</option>
+              <option value="designer">Designer</option>
+              <option value="development">Developer</option>
+              <option value="product">Product Manager</option>
+              <option value="other">Other</option>
+            </MySelect>
 
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-blue-500 p-1 text-white"
-          >
-            Submit
-          </button>
-        </Form>
+            <MyCheckbox name="acceptedTerms">
+              I accept the terms and conditions
+            </MyCheckbox>
+
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-blue-500 p-1 text-white"
+            >
+              Submit
+            </button>
+          </Form>
+        </div>
       </Formik>
     </div>
   );
